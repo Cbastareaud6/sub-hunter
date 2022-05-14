@@ -1,12 +1,19 @@
 package com.cathybastareaud.sub_hunter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import java.util.Random;
 
 public class MainActivity extends Activity {
 
@@ -23,6 +30,11 @@ public class MainActivity extends Activity {
   int shotsTaken;
   int distanceFromSub;
   boolean debugging;
+  ImageView gameView;
+  Bitmap blankBitMap;
+  Canvas canvas;
+  Paint paint;
+
 
 
   /*
@@ -42,6 +54,13 @@ public class MainActivity extends Activity {
     blockSize = numberPixelHorizontal / gridWidth;
     gridHeight = numberPixelVertical / blockSize;
 
+    blankBitMap= Bitmap.createBitmap(numberPixelHorizontal, numberPixelVertical, Config.ARGB_8888);
+    canvas = new Canvas(blankBitMap);
+    gameView = new ImageView(this);
+    paint = new Paint();
+    setContentView(gameView);
+
+
     Log.d("debugging", "in onCreate");
    newGame();
    draw();
@@ -54,11 +73,27 @@ public class MainActivity extends Activity {
   }
 
   public void newGame() {
+    Random rng = new Random();
+    subHorizontalPosition = rng.nextInt(gridWidth);
+    subVerticalPosition = rng.nextInt(gridHeight);
+    shotsTaken = 0;
     Log.d("debugging", "in newGame");
+
 
   }
 
   void draw() {
+    gameView.setImageBitmap(blankBitMap);
+    canvas.drawColor(Color.argb(255,255,255,255));
+    paint.setColor(Color.argb(255,0,0,0));
+
+    canvas.drawLine(blockSize * 1,0, blockSize * 1 ,numberPixelVertical -1,paint);
+    canvas.drawLine(0,blockSize * 1, numberPixelHorizontal -1,blockSize*1, paint);
+
+    paint.setTextSize(blockSize*2);
+    paint.setColor(Color.argb(255,0,0,255));
+    canvas.drawText("Shots taken: "+ shotsTaken + "Distance: "+distanceFromSub, blockSize, blockSize*1.75f,paint);
+
     Log.d("debugging", "in draw");
     printDebuggingText();
     }
@@ -74,18 +109,8 @@ public class MainActivity extends Activity {
     }
 
     void printDebuggingText() {
-      Log.d("NumberHorizontalPixel" + "" , String.valueOf(+numberPixelHorizontal));
-      Log.d("NumberVerticalPixel" + "" , String.valueOf(+numberPixelVertical));
-
-      Log.d("blockSize" + "" , String.valueOf(+blockSize));
-      Log.d("gridWidth" + "" , String.valueOf(+gridWidth));
-      Log.d("gridHeight" + "" , String.valueOf(+ gridHeight));
-
-      Log.d("HorizontalTouch" + "" , String.valueOf(+ horizontalTouch));
-      Log.d("verticalTouch" + "" , String.valueOf(+ verticalTouch));
-      Log.d("subHorizontalPosition" + "" , String.valueOf(+ subHorizontalPosition));
-      Log.d("subVerticalPosition" + "" , String.valueOf(+ subVerticalPosition));
-
+     paint.setTextSize(blockSize);
+     canvas.drawText("number horizontal pixel= " + numberPixelHorizontal, 50, blockSize*3, paint);
 
 
 
